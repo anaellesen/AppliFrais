@@ -80,7 +80,7 @@ case 'corrigerFraisHF':
     $leLibelle = filter_input(INPUT_POST, 'libelle', FILTER_SANITIZE_STRING);
     $laDate = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
     $leMontant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
-    $moisSuivant= getMoisSuivant($mois);  
+      
     
 if ( isset($_POST['corriger'] )){
     valideInfosFrais($laDate, $leLibelle, $leMontant);
@@ -94,17 +94,24 @@ if ( isset($_POST['corriger'] )){
     $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteur, $leMois); 
     $nbJustificatifs= $pdo->getNbjustificatifs($idVisiteur, $leMois);}
     
-    if ( isset($_POST['reporter'] )){
-        if( $pdo->majLibelle($idVisiteur,$leMois,$idFrais)&& $pdo->reporterFraisHorsForfait($idFrais,$mois)){
-    ?>
-    <div class="alert alert-info" role="alert">
-        <p>Ce frais hors forfait a bien été reporté au mois suivant!</p>
-    </div>
-    <?php } }
+   
     
-    
+  if (isset($_POST['reporter'])){
+      $mois=getMoisSuivant($leMois);
+      if ($pdo->estPremierFraisMois($idVisiteur, $mois)){
+      $pdo->creeNouvellesLignesFrais($id, $mois);
+      }
+      $pdo->creeNouveauFraisHorsForfait($idVisiteur,$mois,$leLibelle,$laDate,$leMontant);
+      $pdo-> majLibelle($idVisiteur,$leMois, $idFrais);
+}
+    $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteur, $leMois);
+    $lesFraisForfait = $pdo->getLesFraisForfait($idVisiteur, $leMois);
+    $nbJustificatifs= $pdo->getNbjustificatifs($idVisiteur, $leMois);
+
+
 include 'vues/v_afficheFrais.php';
     break;
+    
 case 'validerFrais':
    $idVisiteur = filter_input(INPUT_POST, 'leVisiteur', FILTER_SANITIZE_STRING);
    $lesVisiteurs= $pdo->getLesVisiteurs();
@@ -144,28 +151,4 @@ case 'supprimerFrais':
     <?php
     
     break;
-
-
-
-case 'reporter':
-    $idFrais = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-    $montant = filter_input(INPUT_GET, 'montant', FILTER_SANITIZE_NUMBER_INT);
-    $libelle = filter_input(INPUT_GET, 'libelle', FILTER_SANITIZE_STRING);
-    $laDate = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
-    $idVisiteur = filter_input(INPUT_POST, 'leVisiteur', FILTER_SANITIZE_STRING);
-    $mois = filter_input(INPUT_POST, 'leMois', FILTER_SANITIZE_STRING);
-    $moisSuivant= getMoisSuivant($mois);
-       
-    if( $pdo->majLibelle($idVisiteur,$mois,$libelle,$idFrais)&& $pdo->reporterFraisHorsForfait($idFrais,$mois)){
-    ?>
-    <div class="alert alert-info" role="alert">
-        <p>Ce frais hors forfait a bien été reporté au mois suivant!</p>
-    </div>
-    <?php }
-    break;
- }  
-
-
-
-
-
+}

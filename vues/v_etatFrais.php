@@ -17,7 +17,7 @@ if ($uc=='etatFrais'){   //si c un visiteur alors le fond est bleu
 <?php
 }else{ //sinon le fond est orange
 ?>
-<form action="index.php?uc=suivreFrais&action=rembourserFrais" 
+<form action="index.php?uc=suivrePaiement&action=paiement" 
               method="post" role="form">
     
    <div class="col-md-4">

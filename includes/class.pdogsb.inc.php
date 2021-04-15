@@ -619,7 +619,7 @@ class PdoGsb
    }
    /**
     * Insere dans la BDD le montant total des frais forfaits et hors forfaits a rembourser, pour un  visiteur et un mois donné
-    * @param type $idVisiteur
+    * @param string $idVisiteur 
     * @param type $mois
     * @param type $montantTotal
     * @param type $montantTotalHF
@@ -696,43 +696,7 @@ class PdoGsb
         $requetePrepare->bindParam(':Mois', $leMois, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
-    /**
-     * Retourne les mois pour lesquels l'etat des fiches de frais est "VAlidée"
-     *
-     * @param String $idVisiteur ID du visiteur
-     *
-     * @return un tableau associatif de clé un mois -aaaamm- et de valeurs
-     *         l'année et le mois correspondant
-     */
-    public function getLesMoisVA()
-    {
-        $requetePrepare = PdoGSB::$monPdo->prepare(
-            'SELECT fichefrais.mois AS mois '
-            . 'FROM fichefrais '
-            . 'WHERE fichefrais.idetat="VA" '
-            . 'ORDER BY fichefrais.mois desc'
-        );
-
-        $requetePrepare->execute();
-        
-        $lesMois = array();       
-        while ($laLigne = $requetePrepare->fetch()) {
-            $mois = $laLigne['mois'];
-            $numAnnee = substr($mois, 0, 4);
-            $numMois = substr($mois, 4, 2);
-            $lesMois[] = array(
-                'mois' => $mois,
-                'numAnnee' => $numAnnee,
-                'numMois' => $numMois
-            );       
-        
-        } 
-        return $lesMois;
-    }
-    
-    
-
-
+   
  public function majlibelle($idVisiteur,$leMois,$idFrais) 
     {
    
@@ -751,7 +715,50 @@ class PdoGsb
         
        
    }
-
-
+ public function getLesVisiteursVa() 
+ {  
+   $requetePrepare = PdoGSB::$monPdo->prepare(   
+           'select *'
+           . 'from visiteur join fichefrais on (id = idvisiteur )'
+           . 'where fichefrais.idetat = "VA"'
+           );
+   $requetePrepare->execute();
+   return $requetePrepare->fetchAll();
+   
+ }
+     
+    /**
+     * Retourne les mois pour lesquels l'etat des fiches de frais est "VAlidée"
+     *
+     * @param String $idVisiteur ID du visiteur
+     *
+     * @return un tableau associatif de clé un mois -aaaamm- et de valeurs
+     *         l'année et le mois correspondant
+     */
     
+
+        public function getLesMoisVa()
+   {
+       $requetePrepare = PdoGSB::$monPdo->prepare(
+           'SELECT distinct fichefrais.mois AS mois FROM fichefrais '
+           . 'WHERE fichefrais.idetat="VA"'    
+           . 'ORDER BY fichefrais.mois desc'
+       );
+       $requetePrepare->execute();
+       $lesMois = array();
+       while ($laLigne = $requetePrepare->fetch()) {
+           $mois = $laLigne['mois'];
+           $numAnnee = substr($mois, 0, 4);
+           $numMois = substr($mois, 4, 2);
+           $lesMois[] = array(
+               'mois' => $mois,
+               'numAnnee' => $numAnnee,
+               'numMois' => $numMois
+           );
+       }
+       return $lesMois;
+   }
+
+   
+             
 }

@@ -44,7 +44,7 @@ case 'deconnexion':
 case 'validerFrais':
     include 'controleurs/c_validerFrais.php';
     break;
-case 'suivreFrais':
+case 'suivrePaiement':
     include 'controleurs/c_suivrePaiement.php';
     break;
 }

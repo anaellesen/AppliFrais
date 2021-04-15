@@ -11,16 +11,18 @@
  * @author    Beth Sefer
  */
 
-  
+   
 ?>
-    <h2>Valider les fiches de frais</h2>
+    
+    <h2>Suivre le paiement des fiches de frais</h2>
     <div class="row">
         <div class="col-md-4"><?php //col-md-4 prend 1/4 de la page ?>
+      
+            <form action="index.php?uc=suivrePaiement&action=afficheFrais" 
+                method="post" role="form">
 
-            <form action="index.php?uc=validerFrais&action=afficheFrais" 
-                  method="post" role="form">
-
-         <?php //liste deroulante du visiteur ?>
+           
+             <?php //liste deroulante du visiteur ?>
               <div class="form-group">
                 <label for="lstVisiteurs" accesskey="n">Choisir le visiteur : </label>
                 <select id="lstVisiteurs" name="lstVisiteurs" class="form-control">
@@ -81,8 +83,7 @@
             </div>
            <input id="ok" type="submit" value="Valider" class="btn btn-success" 
                    role="button">
-            <input id="annuler" type="reset" value="Effacer" class="btn btn-danger" 
-                   role="button">
+           
         </form>
 
     </div>
